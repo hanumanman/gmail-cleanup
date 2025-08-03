@@ -1,4 +1,10 @@
-export const Header = () => {
+"use client"
+import { authClient, googleLogin } from "@/lib/auth-client"
+import { LogOutIcon } from "lucide-react"
+
+export function Header() {
+  const { data: session } = authClient.useSession()
+
   return (
     <header className="relative z-10 px-4 py-6 sm:px-6 lg:px-8">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
@@ -10,6 +16,19 @@ export const Header = () => {
             Gmail Cleanup
           </h1>
         </div>
+
+        {session?.user ? (
+          <div className="flex items-center gap-3">
+            <div>{session.user.name}</div>
+            <button>
+              <LogOutIcon /> Log Out
+            </button>
+          </div>
+        ) : (
+          <button className="cursor-pointer" onClick={googleLogin}>
+            <LogOutIcon /> Login
+          </button>
+        )}
       </div>
     </header>
   )

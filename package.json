@@ -8,18 +8,22 @@
     "start": "next start",
     "check": "tsc --noEmit && oxlint",
     "format": "prettier --write .",
+    "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "auth:generate": "better-auth generate"
+    "auth:generate": "bunx --bun @better-auth/cli generate --config ./src/lib/auth.ts --output ./src/db/schema.ts -y"
   },
   "dependencies": {
+    "@libsql/client": "^0.15.10",
     "arctic": "^3.7.0",
     "better-auth": "^1.3.4",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.44.4",
+    "lucide-react": "^0.536.0",
     "next": "15.3.5",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
     "zod": "^4.0.14"
   },
@@ -32,6 +36,10 @@
     "oxlint": "^1.9.0",
     "prettier": "^3.6.2",
     "tailwindcss": "^4.1.11",
+    "tsx": "^4.20.3",
     "typescript": "^5.9.2"
-  }
+  },
+  "trustedDependencies": [
+    "@tailwindcss/oxide"
+  ]
 }

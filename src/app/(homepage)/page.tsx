@@ -1,6 +1,6 @@
-import { CheckSVG } from "../components/svgs/CheckSVG"
-import { CodeSVG } from "../components/svgs/CodeSVG"
-import { LockSVG } from "../components/svgs/LockSVG"
+import { CheckSVG } from "@/components/svgs/CheckSVG"
+import { CodeSVG } from "@/components/svgs/CodeSVG"
+import { LockSVG } from "@/components/svgs/LockSVG"
 import { Footer } from "./_components/Footer"
 import { Header } from "./_components/Header"
 
