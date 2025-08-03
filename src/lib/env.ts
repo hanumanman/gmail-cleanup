@@ -1,30 +1,32 @@
-import { z } from "zod/v4"
+import { z } from "zod"
 
-// Define the schema for environment variables
+const devServer = "http://localhost:3000"
 const envSchema = z.object({
   // Node environment
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),
 
-  // Google OAuth credentials
-  GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID is required"),
-  GOOGLE_CLIENT_SECRET: z.string().min(1, "GOOGLE_CLIENT_SECRET is required"),
-  // Server configuration
-  PORT: z.coerce.number().positive().default(3000),
+  BASE_URL: z.string().default(devServer),
+
+  BETTER_AUTH_SECRET: z.string().min(1),
+  BETTER_AUTH_URL: z.string().default(devServer),
+
+  GOOGLE_CLIENT_ID: z.string().min(1),
+  GOOGLE_CLIENT_SECRET: z.string().min(1),
+
+  TURSO_CONNECTION_URL: z.string().min(1),
+  TURSO_AUTH_TOKEN: z.string().min(1),
 })
 
-// Type inference from the schema
 export type Env = z.infer<typeof envSchema>
 
-// Validate and parse environment variables
 function validateEnv(): Env {
   const result = envSchema.safeParse(process.env)
 
   if (!result.success) {
     console.error("❌ Invalid environment variables:")
 
-    // Create a detailed error message
     const errorMessages = z.prettifyError(result.error)
 
     throw new Error(
@@ -35,5 +37,4 @@ function validateEnv(): Env {
   return result.data
 }
 
-// Export the validated environment variables
 export const env = validateEnv()
