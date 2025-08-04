@@ -1,4 +1,5 @@
 "use client"
+import { Button } from "@/components/ui/button"
 import { authClient, googleLogin } from "@/lib/auth-client"
 import { LogOutIcon } from "lucide-react"
 
@@ -20,14 +21,14 @@ export function Header() {
         {session?.user ? (
           <div className="flex items-center gap-3">
             <div>{session.user.name}</div>
-            <button>
+            <Button>
               <LogOutIcon /> Log Out
-            </button>
+            </Button>
           </div>
         ) : (
-          <button className="cursor-pointer" onClick={googleLogin}>
+          <Button className="cursor-pointer" onClick={googleLogin}>
             <LogOutIcon /> Login
-          </button>
+          </Button>
         )}
       </div>
     </header>
