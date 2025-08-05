@@ -3,81 +3,117 @@ import { CodeSVG } from "@/components/svgs/CodeSVG"
 import { LockSVG } from "@/components/svgs/LockSVG"
 import { Footer } from "./_components/Footer"
 import { Header } from "./_components/Header"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 
 export default async function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      {/* Header */}
+    <div className="min-h-screen bg-background">
       <Header />
 
-      {/* Hero Section */}
-      <main className="relative z-10 px-4 py-16 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl">
-            Clean Gmail
-            <span className="block text-blue-600 dark:text-blue-400">
-              Instantly
-            </span>
-          </h2>
+      <main className="container mx-auto px-4 py-16">
+        {/* Hero Section */}
+        <div className="max-w-3xl mx-auto text-center space-y-8">
+          <div className="space-y-4">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+              Clean Gmail Instantly
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Delete unwanted emails and reclaim storage space. Simple, fast,
+              and effective email management.
+            </p>
+          </div>
 
-          <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Delete unwanted emails and reclaim storage. Will it help? Idk
-          </p>
-
-          <div className="mt-10 flex items-center justify-center gap-6">
-            <button className="rounded-lg bg-blue-600 px-8 py-3 text-lg font-semibold text-white shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
-              Get Started
-            </button>
-            <button className="rounded-lg border border-gray-300 bg-white px-8 py-3 text-lg font-semibold text-gray-900 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:hover:bg-gray-700">
-              GitHub
-            </button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" className="text-base">
+              Get Started Free
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              className="text-base bg-transparent"
+            >
+              View on GitHub
+            </Button>
           </div>
         </div>
 
         {/* Features Section */}
-        <div className="mt-24 max-w-6xl mx-auto">
-          <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="relative rounded-2xl bg-white p-8 shadow-lg dark:bg-gray-800">
-              <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-xl dark:bg-blue-900">
-                <LockSVG />
-              </div>
-              <h4 className="mt-6 text-xl font-semibold text-gray-900 dark:text-white">
-                Private
-              </h4>
-              <p className="mt-2 text-gray-600 dark:text-gray-300">
-                Your info? I dont want em
-              </p>
-            </div>
-
-            <div className="relative rounded-2xl bg-white p-8 shadow-lg dark:bg-gray-800">
-              <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-xl dark:bg-green-900">
-                <CheckSVG />
-              </div>
-              <h4 className="mt-6 text-xl font-semibold text-gray-900 dark:text-white">
-                Free Forever
-              </h4>
-              <p className="mt-2 text-gray-600 dark:text-gray-300">
-                No fees, no premium tiers. Completely free, always. If you like
-                it, buy me a coffee? Im dirt poor really
-              </p>
-            </div>
-
-            <div className="relative rounded-2xl bg-white p-8 shadow-lg dark:bg-gray-800">
-              <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-xl dark:bg-purple-900">
-                <CodeSVG />
-              </div>
-              <h4 className="mt-6 text-xl font-semibold text-gray-900 dark:text-white">
-                Open Source
-              </h4>
-              <p className="mt-2 text-gray-600 dark:text-gray-300">
-                Just take it man do whatever u want
-              </p>
-            </div>
+        <div className="mt-24 space-y-12">
+          <div className="text-center space-y-4">
+            <h2 className="text-3xl font-bold">Why Choose Clean Gmail?</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Built with privacy, simplicity, and your needs in mind
+            </p>
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <Card>
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
+                  <LockSVG />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">100% Private</h3>
+                  <p className="text-muted-foreground">
+                    Your data stays yours. We don't store, track, or sell your
+                    information.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
+                  <CheckSVG />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Free Forever</h3>
+                  <p className="text-muted-foreground">
+                    No fees, no premium tiers, no hidden costs. Completely free
+                    to use, always.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="md:col-span-2 lg:col-span-1">
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
+                  <CodeSVG />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Open Source</h3>
+                  <p className="text-muted-foreground">
+                    Fully open source and transparent. Fork it, modify it,
+                    contribute to it.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* CTA Section */}
+        <div className="mt-24">
+          <Card className="max-w-2xl mx-auto">
+            <CardContent className="p-8 text-center space-y-6">
+              <div className="space-y-2">
+                <h2 className="text-2xl font-bold">
+                  Ready to clean up your Gmail?
+                </h2>
+                <p className="text-muted-foreground">
+                  Join thousands of users who have already reclaimed their inbox
+                  space
+                </p>
+              </div>
+              <Button size="lg">Start Cleaning Now</Button>
+            </CardContent>
+          </Card>
         </div>
       </main>
 
-      {/* Footer */}
       <Footer />
     </div>
   )
