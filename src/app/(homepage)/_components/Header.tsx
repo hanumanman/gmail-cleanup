@@ -26,7 +26,7 @@ export function Header() {
             </Button>
           </div>
         ) : (
-          <Button className="cursor-pointer" onClick={googleLogin}>
+          <Button onClick={googleLogin}>
             <LogOutIcon /> Login
           </Button>
         )}
