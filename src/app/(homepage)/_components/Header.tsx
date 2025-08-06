@@ -3,15 +3,15 @@ import { useState } from "react"
 import { ThemeToggler } from "@/components/mode-toggler"
 import { Button } from "@/components/ui/button"
 import { authClient, googleLogin, googleLogout } from "@/lib/auth-client"
-import { LogOutIcon, MenuIcon, XIcon } from "lucide-react"
+import { Loader2, LogOutIcon, MenuIcon, XIcon } from "lucide-react"
 import Link from "next/link"
 
 export function Header() {
-  const { data: session } = authClient.useSession()
+  const { data: session, isPending } = authClient.useSession()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <header className="relative z-10 px-4 py-6 sm:px-6 lg:px-8">
+    <header className="relative z-10 px-4 py-6 sm:px-6 lg:px-8 border-b border-gray-200 dark:border-gray-700">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         <div className="flex items-center space-x-3">
           <Link
@@ -31,6 +31,10 @@ export function Header() {
               <Button onClick={googleLogout}>
                 <LogOutIcon /> Log Out
               </Button>
+            </div>
+          ) : isPending ? (
+            <div>
+              <Loader2 className="animate-spin" />
             </div>
           ) : (
             <Button onClick={googleLogin}>
@@ -69,6 +73,10 @@ export function Header() {
                   <LogOutIcon /> Log Out
                 </Button>
               </>
+            ) : isPending ? (
+              <div>
+                <Loader2 className="animate-spin" />
+              </div>
             ) : (
               <Button onClick={googleLogin} className="w-full">
                 <LogOutIcon /> Login
