@@ -5,6 +5,7 @@ import { Footer } from "./_components/Footer"
 import { Header } from "./_components/Header"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import Link from "next/link"
 
 export default async function Home() {
   return (
@@ -25,8 +26,8 @@ export default async function Home() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="text-base">
-              Get Started Free
+            <Button asChild size="lg" className="text-base">
+              <Link href={"/clean"}>Get Started Free</Link>
             </Button>
             <Button
               variant="outline"

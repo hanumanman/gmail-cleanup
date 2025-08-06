@@ -17,7 +17,6 @@ export async function googleLogin() {
 
 export async function googleLogout() {
   const { error } = await authClient.signOut()
-  // window.location.reload()
 
   if (error) {
     console.error("Google logout error", error)
