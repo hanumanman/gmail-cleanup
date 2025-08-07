@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { authClient, googleLogin, googleLogout } from "@/lib/auth-client"
 import { Loader2, LogOutIcon, MenuIcon, XIcon } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 
 export function Header() {
   const { data: session, isPending } = authClient.useSession()
@@ -27,6 +28,11 @@ export function Header() {
           <ThemeToggler />
           {session?.user ? (
             <div className="flex items-center gap-3">
+              {session.user.image && (
+                <div className="w-8 aspect-square rounded-full relative overflow-hidden">
+                  <Image src={session.user.image} fill alt="User avatar" />
+                </div>
+              )}
               <div className="whitespace-nowrap">{session.user.name}</div>
               <Button onClick={googleLogout}>
                 <LogOutIcon /> Log Out
@@ -67,6 +73,11 @@ export function Header() {
               <>
                 <div className="whitespace-nowrap gap-2 flex items-center">
                   <ThemeToggler />
+                  {session.user.image && (
+                    <div className="w-8 aspect-square rounded-full relative overflow-hidden">
+                      <Image src={session.user.image} fill alt="User avatar" />
+                    </div>
+                  )}
                   {session.user.name}
                 </div>
                 <Button onClick={googleLogout} className="w-full">

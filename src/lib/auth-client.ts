@@ -17,9 +17,10 @@ export async function googleLogin() {
 
 export async function googleLogout() {
   const { error } = await authClient.signOut()
-
   if (error) {
     console.error("Google logout error", error)
     toast.error("Error logging out with Google. Check logs for more details.")
+    return
   }
+  window.location.href = "/"
 }

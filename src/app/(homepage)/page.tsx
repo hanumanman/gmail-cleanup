@@ -3,7 +3,7 @@ import { CodeSVG } from "@/components/svgs/CodeSVG"
 import { LockSVG } from "@/components/svgs/LockSVG"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { GetStartedButton } from "./_components/get-started-button"
+import Link from "next/link"
 
 export default async function Home() {
   return (
@@ -21,7 +21,9 @@ export default async function Home() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <GetStartedButton />
+          <Button asChild size="lg" className="text-base">
+            <Link href="/clean">Go to Cleanup</Link>
+          </Button>
           <Button
             variant="outline"
             size="lg"

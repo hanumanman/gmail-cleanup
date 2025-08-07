@@ -1,8 +1,11 @@
 import z from "zod"
 import { google as googleapi } from "googleapis"
+import { db } from "@/db"
+import { account } from "@/db/schema"
+import { and, eq } from "drizzle-orm"
 
 const schema = z.object({
-  access_token: z.string(),
+  userId: z.string(),
 })
 
 export async function POST(request: Request) {
@@ -15,11 +18,19 @@ export async function POST(request: Request) {
     return Response.json({ success, msg: z.prettifyError(error) })
   }
 
-  const { access_token } = data
+  const { userId } = data
+
+  const [user] = await db
+    .select()
+    .from(account)
+    .where(and(eq(account.userId, userId), eq(account.providerId, "google")))
+
+  // TODO: Delete console.log
+  console.log("LOGGING user", user)
 
   // 2. Create an authenticated OAuth2 client
   const authClient = new googleapi.auth.OAuth2()
-  authClient.setCredentials({ access_token })
+  authClient.setCredentials({ access_token: user.accessToken })
 
   const gmail = googleapi.gmail({ version: "v1", auth: authClient })
 
