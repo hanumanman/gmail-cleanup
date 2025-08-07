@@ -5,7 +5,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
 import { IGmail } from "../types"
 
 export const MailCard = (props: IGmail) => {
@@ -23,10 +22,9 @@ export const MailCard = (props: IGmail) => {
       <CardContent>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-x-2">
-            <Checkbox />
-            <span className="text-sm text-gray-500">
-              {new Date(props.internalDate).toLocaleDateString()}
-            </span>
+            {/* <Checkbox /> */}
+            {/* TODO: format date */}
+            <span className="text-sm text-gray-500">{props.internalDate}</span>
           </div>
         </div>
       </CardContent>
