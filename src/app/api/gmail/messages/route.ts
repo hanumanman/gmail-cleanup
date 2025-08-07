@@ -25,19 +25,15 @@ export async function POST(request: Request) {
     .from(account)
     .where(and(eq(account.userId, userId), eq(account.providerId, "google")))
 
-  // TODO: Delete console.log
-  console.log("LOGGING user", user)
-
-  // 2. Create an authenticated OAuth2 client
+  // Create an authenticated OAuth2 client
   const authClient = new googleapi.auth.OAuth2()
   authClient.setCredentials({ access_token: user.accessToken })
-
   const gmail = googleapi.gmail({ version: "v1", auth: authClient })
 
-  // 3. Fetch the list of the first 10 message IDs
+  // Fetch the list of message IDs
   const listResponse = await gmail.users.messages.list({
     userId: "me",
-    maxResults: 10,
+    maxResults: 9, // TODO: Make this configurable
   })
 
   const messages = listResponse.data.messages
@@ -45,30 +41,16 @@ export async function POST(request: Request) {
     return Response.json([], { status: 200 })
   }
 
-  // 4. Fetch the full details for each message
+  // Fetch the full details for each message
   const emailPromises = messages.map(message =>
     gmail.users.messages.get({
       userId: "me",
       id: message.id!,
-      format: "metadata",
-      metadataHeaders: ["Subject", "From", "Date"],
     })
   )
 
   const emailResponses = await Promise.all(emailPromises)
-  const emails = emailResponses.map(res => {
-    const headers = res.data.payload?.headers
-    const subject = headers?.find(h => h.name === "Subject")?.value
-    const from = headers?.find(h => h.name === "From")?.value
-    const date = headers?.find(h => h.name === "Date")?.value
-    return {
-      id: res.data.id,
-      snippet: res.data.snippet,
-      subject,
-      from,
-      date,
-    }
-  })
+  const emails = emailResponses.map(res => res.data)
 
-  return Response.json({ messages, emails })
+  return Response.json({ emails })
 }

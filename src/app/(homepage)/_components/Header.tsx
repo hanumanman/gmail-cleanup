@@ -30,7 +30,12 @@ export function Header() {
             <div className="flex items-center gap-3">
               {session.user.image && (
                 <div className="w-8 aspect-square rounded-full relative overflow-hidden">
-                  <Image src={session.user.image} fill alt="User avatar" />
+                  <Image
+                    src={session.user.image}
+                    fill
+                    alt="User avatar"
+                    sizes="100px"
+                  />
                 </div>
               )}
               <div className="whitespace-nowrap">{session.user.name}</div>
@@ -75,7 +80,12 @@ export function Header() {
                   <ThemeToggler />
                   {session.user.image && (
                     <div className="w-8 aspect-square rounded-full relative overflow-hidden">
-                      <Image src={session.user.image} fill alt="User avatar" />
+                      <Image
+                        src={session.user.image}
+                        fill
+                        alt="User avatar"
+                        sizes="100px"
+                      />
                     </div>
                   )}
                   {session.user.name}
