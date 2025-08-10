@@ -1,8 +1,8 @@
-import z from "zod"
-import { google as googleapi } from "googleapis"
 import { db } from "@/db"
 import { account } from "@/db/schema"
 import { and, eq } from "drizzle-orm"
+import { google as googleapi } from "googleapis"
+import z from "zod"
 
 const schema = z.object({
   userId: z.string(),
@@ -25,9 +25,21 @@ export async function POST(request: Request) {
     .from(account)
     .where(and(eq(account.userId, userId), eq(account.providerId, "google")))
 
+  // const expiresDate = user.accessTokenExpiresAt?.getTime()
+  //
+  // const now = new Date().getTime()
+  //
+  // if (expiresDate && now > expiresDate) {
+  //   return Response.json({ success: false, msg: "Token expired" })
+  // }
+
   // Create an authenticated OAuth2 client
   const authClient = new googleapi.auth.OAuth2()
-  authClient.setCredentials({ access_token: user.accessToken })
+  authClient.setCredentials({
+    access_token: user.accessToken,
+    refresh_token: user.refreshToken,
+  })
+
   const gmail = googleapi.gmail({ version: "v1", auth: authClient })
 
   // Fetch the list of message IDs

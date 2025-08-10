@@ -37,7 +37,7 @@ export default function RootLayout({
         >
           <div className="min-h-screen flex flex-col justify-between bg-background">
             <Header />
-            <div className="grow">{children}</div>
+            <div className="grow flex flex-col">{children}</div>
             <Footer />
           </div>
         </ThemeProvider>

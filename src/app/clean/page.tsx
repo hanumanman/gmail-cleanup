@@ -1,8 +1,8 @@
 import { env } from "@/lib/env"
 import { getSession } from "@/lib/session"
 import { redirect } from "next/navigation"
-import { IGmail } from "./types"
 import { MailCard } from "./_components/mail-card"
+import { IGmail } from "./types"
 
 async function CleanupPage() {
   const session = await getSession()
