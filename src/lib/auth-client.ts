@@ -3,10 +3,10 @@ import { toast } from "sonner"
 
 export const authClient = createAuthClient()
 
-export async function googleLogin() {
+export async function googleLogin(callbackURL?: string) {
   const { error } = await authClient.signIn.social({
     provider: "google",
-    callbackURL: "/",
+    callbackURL: callbackURL || "/",
   })
 
   if (error) {

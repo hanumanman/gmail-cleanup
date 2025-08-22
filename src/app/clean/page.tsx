@@ -7,8 +7,9 @@ import { IGmail } from "./types"
 
 async function CleanupPage() {
   const session = await getSession()
+
   if (!session) {
-    redirect("/")
+    redirect(`/api/auth/login?callbackUrl=${encodeURIComponent("/clean")}`)
   }
 
   const res = await fetch(env.BASE_URL + "/api/gmail/messages", {

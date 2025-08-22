@@ -1,15 +1,21 @@
 "use client"
-import { useState } from "react"
 import { ThemeToggler } from "@/components/mode-toggler"
 import { Button } from "@/components/ui/button"
 import { authClient, googleLogin, googleLogout } from "@/lib/auth-client"
 import { Loader2, LogOutIcon, MenuIcon, XIcon } from "lucide-react"
-import Link from "next/link"
 import Image from "next/image"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useState } from "react"
 
 export function Header() {
   const { data: session, isPending } = authClient.useSession()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const pathname = usePathname()
+
+  async function login() {
+    await googleLogin(pathname)
+  }
 
   return (
     <header className="relative z-10 px-4 py-6 sm:px-6 lg:px-8 border-b border-gray-200 dark:border-gray-700">
@@ -48,7 +54,7 @@ export function Header() {
               <Loader2 className="animate-spin" />
             </div>
           ) : (
-            <Button onClick={googleLogin}>
+            <Button onClick={login}>
               <LogOutIcon /> Login
             </Button>
           )}
@@ -99,7 +105,7 @@ export function Header() {
                 <Loader2 className="animate-spin" />
               </div>
             ) : (
-              <Button onClick={googleLogin} className="w-full">
+              <Button onClick={login} className="w-full">
                 <LogOutIcon /> Login
               </Button>
             )}
