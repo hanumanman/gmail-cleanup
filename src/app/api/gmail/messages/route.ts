@@ -5,48 +5,32 @@ import { env } from "@/lib/env"
 import { and, eq } from "drizzle-orm"
 import { google as googleapi } from "googleapis"
 import { headers } from "next/headers"
-import z from "zod"
 
-const schema = z.object({
-  userId: z.string(),
-})
-
-export async function POST(request: Request) {
-  const res = await request
-    .json()
-    .catch(() => Response.json({ success: false, msg: "Invalid JSON" }))
-
+export async function POST() {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
 
-  console.log("SESSION IS ", session)
-
-  const { success, data, error } = schema.safeParse(res)
-  if (!success) {
-    return Response.json({ success, msg: z.prettifyError(error) })
-  }
-
-  const { userId } = data
-  console.log("USER ID: ", userId)
-
   const [userAccount] = await db
     .select()
     .from(account)
-    .where(and(eq(account.userId, userId), eq(account.providerId, "google")))
+    .where(
+      and(
+        eq(account.userId, session?.session.userId as string),
+        eq(account.providerId, "google")
+      )
+    )
 
   let access_token = ""
-  let refresh_token = ""
   try {
     const accessTokenObj = await auth.api.getAccessToken({
       body: {
         providerId: "google",
-        accountId: userAccount.accountId,
-        userId: userAccount.userId,
       },
+      headers: await headers(),
     })
     access_token = accessTokenObj.accessToken || ""
-    refresh_token = userAccount.refreshToken || ""
+    console.log("access_token is ", access_token)
   } catch (error) {
     console.log("BIG ERR")
     console.log(JSON.stringify(error, null, 2))
@@ -58,15 +42,15 @@ export async function POST(request: Request) {
   }
 
   // Create an authenticated OAuth2 client
-  const authClient = new googleapi.auth.OAuth2(
-    env.GOOGLE_CLIENT_ID,
-    env.GOOGLE_CLIENT_SECRET
-  )
-  authClient.setCredentials({
-    access_token,
-    refresh_token,
+  // const authClient = new googleapi.auth.OAuth2()
+  // authClient.setCredentials({
+  //   access_token,
+  // })
+  // const gmail = googleapi.gmail({ version: "v1", auth: authClient })
+  const gmail = googleapi.gmail({
+    version: "v1",
+    auth: env.GOOGLE_API_KEY,
   })
-  const gmail = googleapi.gmail({ version: "v1", auth: authClient })
 
   // Fetch the list of message IDs
   const listResponse = await gmail.users.messages.list({
