@@ -1,5 +1,6 @@
 import { env } from "@/lib/env"
 import { getSession } from "@/lib/session"
+import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { MailCard } from "./_components/mail-card"
 import { IGmail } from "./types"
@@ -15,6 +16,7 @@ async function CleanupPage() {
     body: JSON.stringify({
       userId: session.user.id,
     }),
+    headers: await headers(),
   })
 
   const mails: IGmail[] = await res.json().then(data => data.emails)
