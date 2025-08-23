@@ -1,8 +1,8 @@
 import { getAccessToken, getSession } from "@/lib/session"
 import { google as googleapis } from "googleapis"
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getSession()
     if (!session?.user?.id) {
@@ -49,71 +49,25 @@ export async function GET(request: NextRequest) {
       auth: oauth2Client,
     })
 
-    // Fetch all labels to map IDs to names
-    const labelsResponse = await gmail.users.labels.list({
+    // Fetch all labels
+    const response = await gmail.users.labels.list({
       userId: "me",
     })
-    const labels = labelsResponse.data.labels || []
-    const labelMap = new Map(labels.map(label => [label.id!, label.name!]))
 
-    // Get labelId and pageToken from query parameters
-    const { searchParams } = new URL(request.url)
-    const labelId = searchParams.get("labelId")
-    const pageToken = searchParams.get("pageToken")
+    const labels = response.data.labels || []
 
-    const listParams: any = {
-      userId: "me",
-      maxResults: 10, // 10 items per page as requested
-    }
-
-    // If labelId is provided, filter by that label
-    if (labelId && labelId !== "all") {
-      listParams.labelIds = [labelId]
-    }
-
-    // If pageToken is provided, use it for pagination
-    if (pageToken) {
-      listParams.pageToken = pageToken
-    }
-
-    const response = await gmail.users.messages.list(listParams)
-
-    const messages = response.data.messages || []
-
-    if (messages.length === 0) {
-      return NextResponse.json({
-        messages: [],
-        message: "No messages found",
-      })
-    }
-
-    // Get full message details for each message
-    const messageDetails = await Promise.all(
-      messages.map(async message => {
-        const msgResponse = await gmail.users.messages.get({
-          userId: "me",
-          id: message.id!,
-          format: "metadata",
-          metadataHeaders: ["Subject", "From", "Date"],
-        })
-        const msgData = msgResponse.data
-        // Map label IDs to names
-        const labelNames = (msgData.labelIds || []).map(
-          id => labelMap.get(id) || id
-        )
-        return {
-          ...msgData,
-          labels: labelNames,
-        }
-      })
-    )
+    // Return all labels (both system and user labels)
+    const allLabels = labels.map(label => ({
+      id: label.id!,
+      name: label.name!,
+      type: label.type,
+    }))
 
     return NextResponse.json({
-      messages: messageDetails,
-      nextPageToken: response.data.nextPageToken || null,
+      labels: allLabels,
     })
   } catch (error) {
-    console.error("Error fetching Gmail messages:", error)
+    console.error("Error fetching Gmail labels:", error)
     if (error instanceof Error) {
       if (error.message.includes("insufficient authentication scopes")) {
         return NextResponse.json(
@@ -130,7 +84,7 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { error: "Failed to fetch messages" },
+      { error: "Failed to fetch labels" },
       { status: 500 }
     )
   }
