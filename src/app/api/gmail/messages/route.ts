@@ -1,8 +1,6 @@
-import { auth } from "@/lib/auth"
-import { getSession } from "@/lib/session"
+import { getAccessToken, getSession } from "@/lib/session"
 import { logger } from "@/lib/utils"
 import { google } from "googleapis"
-import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 
 export async function GET() {
@@ -14,12 +12,7 @@ export async function GET() {
     }
 
     // Get the access token for Google using Better Auth's API
-    const accessTokenResponse = await auth.api.getAccessToken({
-      body: {
-        providerId: "google",
-      },
-      headers: await headers(),
-    })
+    const accessTokenResponse = await getAccessToken()
 
     if (!accessTokenResponse?.accessToken) {
       return NextResponse.json(
@@ -114,7 +107,7 @@ export async function GET() {
           {
             error: "Insufficient authentication scopes",
             message:
-              "Please re-authenticate with Google to grant proper Gmail API access. The required scope is 'https://mail.google.com/' (full Gmail access)",
+              "Please re-authenticate with Google to grant proper Gmail API access.",
             details:
               "You need to log out and log back in to grant the new Gmail permissions",
           },

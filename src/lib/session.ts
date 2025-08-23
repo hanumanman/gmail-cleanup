@@ -3,8 +3,16 @@ import { headers } from "next/headers"
 import { auth } from "./auth"
 
 export async function getSession() {
-  const session = await auth.api.getSession({
+  return await auth.api.getSession({
     headers: await headers(),
   })
-  return session
+}
+
+export async function getAccessToken() {
+  return await auth.api.getAccessToken({
+    body: {
+      providerId: "google",
+    },
+    headers: await headers(),
+  })
 }
