@@ -13,14 +13,11 @@ async function CleanupPage() {
   }
 
   const res = await fetch(env.BASE_URL + "/api/gmail/messages", {
-    method: "POST",
-    body: JSON.stringify({
-      userId: session.user.id,
-    }),
+    method: "GET",
     headers: await headers(),
   })
 
-  const mails: IGmail[] = await res.json().then(data => data.emails)
+  const mails: IGmail[] = await res.json().then(value => value.messages)
 
   return (
     <div className="h-screen overflow-y-auto">
