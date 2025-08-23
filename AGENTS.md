@@ -31,14 +31,12 @@
 - Path aliases: `@/*` maps to `./src/*`
 - Strict TypeScript mode enabled
 - Explicit return types for functions
+- React imports: `import * as React from "react"`
 
 ### Formatting (Prettier)
 
-- No semicolons
-- Double quotes
-- 2-space indentation
-- 80 character line width
-- ES5 trailing commas
+- No semicolons, double quotes, 2-space indentation
+- 80 character line width, ES5 trailing commas
 - No arrow function parentheses when possible
 
 ### Naming Conventions
@@ -47,22 +45,26 @@
 - Functions/variables: camelCase (e.g., `cn`, `buttonVariants`)
 - Types: PascalCase (e.g., `Metadata`, `VariantProps`)
 - Database: snake_case columns, camelCase TypeScript
+- Files: kebab-case for pages/components, camelCase for utilities
 
 ### Component Patterns
 
 - Use `class-variance-authority` for variant components
 - Utility function `cn()` for conditional classes
 - Radix UI primitives for accessibility
-- Tailwind CSS for styling
+- Tailwind CSS for styling with data attributes
+- Slot pattern for flexible component composition
 
 ### Database
 
 - Drizzle ORM with SQLite
-- Timestamp fields use `integer` with `mode: "timestamp"`
-- Boolean fields use `integer` with `mode: "boolean"`
+- Timestamp fields: `integer` with `mode: "timestamp"`
+- Boolean fields: `integer` with `mode: "boolean"`
 - Foreign keys with cascade delete where appropriate
+- Default timestamps with `$defaultFn(() => new Date())`
 
 ### Error Handling
 
 - Leverage TypeScript strict mode for compile-time safety
 - Use proper type guards and validation (Zod schemas where needed)
+- Custom logger utility for development-only console output
