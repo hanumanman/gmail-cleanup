@@ -1,0 +1,57 @@
+---
+globs: *.ts,*.tsx
+---
+
+# TypeScript and Coding Conventions
+
+## Code Style and Formatting
+
+- **Semicolons**: Always use semicolons
+- **Quotes**: Use double quotes for strings
+- **Formatting**: Use Prettier for code formatting (`npm run format`)
+- **Linting**: Use TypeScript compiler + Oxlint (`npm run check`)
+
+## TypeScript Standards
+
+- **Strict Mode**: Enabled in [tsconfig.json](mdc:tsconfig.json)
+- **Type Imports**: Use `import type` for type-only imports
+- **Interfaces**: Use interfaces for object shapes, prefix with `I` for props (e.g., `IGmail`)
+- **Function Types**: Prefer function declarations for components and async functions
+
+## Import Organization
+
+Follow this import order:
+
+1. Node modules (React, Next.js, external packages)
+2. Internal utilities and libs (using `@/` prefix)
+3. Relative imports (`./`, `../`)
+4. Type-only imports last with `import type`
+
+Example:
+
+```typescript
+import { headers } from "next/headers"
+import { toast } from "sonner"
+import { MailCard } from "./_components/mail-card"
+import type { IGmail } from "./types"
+```
+
+## Path Mapping
+
+- Use `@/*` for all internal imports pointing to `src/*`
+- Prefer absolute imports over relative when possible
+- Example: `@/components/ui/button` instead of `../../components/ui/button`
+
+## Error Handling
+
+- Use proper async/await patterns with try-catch blocks
+- Return proper HTTP status codes in API routes (401, 403, 500)
+- Use consistent error response format in API routes
+- Handle Google API authentication errors specifically
+
+## Component Conventions
+
+- Use function declarations for React components
+- Export components as named exports when possible
+- Use proper TypeScript props interfaces
+- Implement proper loading and error states

@@ -1,0 +1,156 @@
+---
+globs: *.css,**/components/**/*,**/_components/**/*
+---
+
+# Tailwind CSS and Styling Patterns
+
+## Tailwind Configuration
+
+### Version and Setup
+
+- **Tailwind CSS v4**: Latest version with modern features
+- **PostCSS Integration**: Via [postcss.config.mjs](mdc:postcss.config.mjs)
+- **Custom Configuration**: See [components.json](mdc:components.json) for component settings
+
+### Global Styles
+
+- Base styles in [src/app/globals.css](mdc:src/app/globals.css)
+- Font configuration: Roboto (primary) and Roboto Mono (monospace)
+- Theme provider for dark/light mode support
+
+## Utility Patterns
+
+### Class Composition
+
+Use the `cn()` utility from [src/lib/utils.ts](mdc:src/lib/utils.ts) for conditional classes:
+
+```typescript
+import { cn } from "@/lib/utils"
+
+className={cn(
+  "base classes",
+  condition && "conditional classes",
+  variant === "primary" && "variant classes",
+  className // Allow prop overrides
+)}
+```
+
+### Design System Utilities
+
+- **Spacing**: Use consistent spacing scale (p-4, m-4, gap-4)
+- **Colors**: Use semantic color names (primary, secondary, destructive)
+- **Typography**: Use text utilities (text-sm, font-medium, etc.)
+- **Shadows**: Use shadow utilities (shadow-xs, shadow-sm)
+
+## Component Styling Patterns
+
+### CVA (Class Variance Authority)
+
+Follow the pattern established in [src/components/ui/button.tsx](mdc:src/components/ui/button.tsx):
+
+```typescript
+import { cva, type VariantProps } from "class-variance-authority"
+
+const componentVariants = cva("base classes for all variants", {
+  variants: {
+    variant: {
+      default: "default variant classes",
+      destructive: "destructive variant classes",
+    },
+    size: {
+      default: "default size classes",
+      sm: "small size classes",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+    size: "default",
+  },
+})
+```
+
+### Responsive Design
+
+- **Mobile-first**: Start with mobile styles, add larger breakpoints
+- **Breakpoints**: Use `sm:`, `md:`, `lg:` prefixes
+- **Grid Layouts**: Use responsive grid patterns: `grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4`
+
+## Layout Patterns
+
+### Container and Spacing
+
+- **Padding**: Use consistent padding (p-4 for general content)
+- **Gaps**: Use gap utilities for flex/grid layouts (gap-4)
+- **Full Height**: Use `h-screen` for full viewport height layouts
+- **Overflow**: Use `overflow-y-auto` for scrollable content
+
+### Flexbox Patterns
+
+```css
+/* Common flex patterns */
+.flex.items-center.justify-center    /* Center everything */
+.flex.items-center.justify-between   /* Space between */
+.flex.flex-col                       /* Vertical stack */
+.min-h-screen.flex.flex-col.justify-between /* Full height with footer */
+```
+
+### Grid Patterns
+
+```css
+/* Responsive card grids */
+.grid.grid-cols-1.gap-4.sm:grid-cols-2.md:grid-cols-3.lg:grid-cols-4
+```
+
+## Theme and Dark Mode
+
+### Theme Provider
+
+- Uses `next-themes` for theme management
+- Configured in [src/app/layout.tsx](mdc:src/app/layout.tsx)
+- Supports system, light, and dark themes
+
+### Color Utilities
+
+- Use semantic color classes: `bg-background`, `text-foreground`
+- Support dark mode automatically: `dark:bg-accent/50`
+- Use CSS variables for theme colors
+
+### Focus and Accessibility
+
+- **Focus Rings**: Use `focus-visible:ring-ring/50 focus-visible:ring-[3px]`
+- **Outline**: Use `outline-none` with proper focus-visible styles
+- **Invalid States**: Use `aria-invalid:ring-destructive/20` patterns
+
+## Animation and Transitions
+
+### Transition Patterns
+
+- Use `transition-all` for general transitions
+- Use `hover:` states for interactive elements
+- Keep animations subtle and fast
+
+### Loading States
+
+- Use consistent loading indicators
+- Implement proper skeleton states where appropriate
+- Use `disabled:` states for form elements
+
+## Component-specific Patterns
+
+### Buttons
+
+- Use CVA variants for different button types
+- Include proper disabled and focus states
+- Support `asChild` prop for composition
+
+### Cards
+
+- Consistent padding and spacing
+- Use shadow utilities for elevation
+- Support hover states where interactive
+
+### Form Elements
+
+- Consistent sizing and spacing
+- Proper error state styling
+- Use focus-visible patterns for accessibility

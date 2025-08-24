@@ -1,0 +1,57 @@
+---
+alwaysApply: true
+---
+
+# Gmail Cleanup Project Structure
+
+This is a **Next.js 15** application for Gmail cleanup functionality with **Better Auth** integration and **Drizzle ORM**.
+
+## Core Architecture
+
+- **Framework**: Next.js 15 with App Router and React 19
+- **Authentication**: Better Auth with Google OAuth and Gmail API access
+- **Database**: SQLite with Drizzle ORM
+- **Styling**: Tailwind CSS v4 with custom design system
+- **UI Components**: Radix UI with custom styling via CVA
+- **Build Tool**: Bun (see [package.json](mdc:package.json))
+- **Linting**: TypeScript + Oxlint
+- **Runtime**: Uses Turbopack for dev mode
+
+## Project Structure
+
+```
+src/
+├── app/                     # Next.js App Router pages and API routes
+│   ├── (homepage)/          # Route group for homepage with shared layout
+│   │   └── _components/     # Page-specific components (Header, Footer)
+│   ├── api/                 # API routes
+│   │   ├── auth/           # Authentication endpoints
+│   │   └── gmail/          # Gmail API integration
+│   ├── clean/              # Gmail cleanup interface
+│   │   └── _components/    # Page-specific components
+│   ├── layout.tsx          # Root layout with theme provider
+│   └── globals.css         # Global styles and Tailwind base
+├── components/             # Shared/reusable components
+│   ├── ui/                # Base UI components (buttons, cards, etc.)
+│   └── svgs/              # Custom SVG components
+├── db/                    # Database layer
+│   ├── index.ts           # Database connection and client
+│   └── schema.ts          # Drizzle schema definitions
+└── lib/                   # Utility libraries and configurations
+    ├── auth.ts            # Better Auth configuration
+    ├── auth-client.ts     # Client-side auth utilities
+    ├── session.ts         # Session management utilities
+    ├── env.ts             # Environment variables validation
+    └── utils.ts           # General utilities (cn, etc.)
+```
+
+## Key Configuration Files
+
+- [tsconfig.json](mdc:tsconfig.json) - TypeScript configuration with `@/*` path mapping
+- [drizzle.config.ts](mdc:drizzle.config.ts) - Database configuration and migrations
+- [components.json](mdc:components.json) - shadcn/ui component configuration
+- [next.config.ts](mdc:next.config.ts) - Next.js configuration
+
+## Database Schema
+
+The database uses Better Auth's generated schema with user sessions and Google OAuth accounts. See [src/db/schema.ts](mdc:src/db/schema.ts) for the complete schema including user, session, account, and verification tables.

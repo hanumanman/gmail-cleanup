@@ -1,0 +1,69 @@
+---
+globs: **/app/**/*,**/page.tsx,**/layout.tsx,**/route.ts,**/loading.tsx
+---
+
+# Next.js App Router Patterns
+
+## App Router Structure
+
+- **Route Groups**: Use `(groupname)` for organizing routes without affecting URL structure
+- **Page Components**: Each `page.tsx` should be the default export function
+- **Layout Components**: Use `layout.tsx` for shared layouts, export as default
+- **Loading Components**: Use `loading.tsx` for loading UI states
+- **Private Components**: Use `_components/` folders for page-specific components
+
+## API Routes (`route.ts`)
+
+### HTTP Methods
+
+- Use named exports: `GET`, `POST`, `PUT`, `DELETE`, etc.
+- Return `NextResponse.json()` for all responses
+- Include proper HTTP status codes
+
+### Authentication Pattern
+
+```typescript
+import { getSession } from "@/lib/session"
+import { NextRequest, NextResponse } from "next/server"
+
+export async function GET(request: NextRequest) {
+  const session = await getSession()
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+  // ... rest of the logic
+}
+```
+
+### Error Handling in API Routes
+
+- Return consistent error format: `{ error: string, message?: string }`
+- Use appropriate HTTP status codes (401, 403, 500)
+- Handle Google API specific errors with clear messages
+
+## Server Components vs Client Components
+
+- **Default**: Use Server Components when possible
+- **Client Components**: Use `"use client"` only when needed for:
+  - State management (`useState`, `useEffect`)
+  - Event handlers
+  - Browser-only APIs
+  - Interactive components
+
+## Data Fetching
+
+- **Server Components**: Use direct async functions in components
+- **Client Components**: Use `fetch()` with proper error handling
+- **Headers**: Use `headers()` from `next/headers` for server-side requests
+- **Environment**: Access via the configured env utilities in [src/lib/env.ts](mdc:src/lib/env.ts)
+
+## Route Organization
+
+- Group related functionality in route groups: `(homepage)`, `clean/`
+- Use nested folders for API versioning or organization: `api/gmail/messages/`
+- Keep page-specific components in `_components/` folders
+
+## Metadata and SEO
+
+- Export `metadata` object from page components for static metadata
+- Use proper title and description as shown in [src/app/layout.tsx](mdc:src/app/layout.tsx)

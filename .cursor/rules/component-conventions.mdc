@@ -1,0 +1,110 @@
+---
+globs: **/components/**/*,**/_components/**/*
+---
+
+# React Component Conventions
+
+## Component Structure
+
+### File Organization
+
+- **Shared Components**: Place in `src/components/`
+- **Page-specific Components**: Place in `_components/` folders within page directories
+- **UI Components**: Place in `src/components/ui/` for base design system components
+
+### Component Definition
+
+- Use function declarations for components (not arrow functions)
+- Export as named exports when possible
+- Use PascalCase for component names and filenames
+
+```typescript
+// Good
+export function MailCard({ id, subject, from }: MailCardProps) {
+  return <div>...</div>
+}
+
+// Avoid
+export const MailCard = ({ id, subject, from }: MailCardProps) => {
+  return <div>...</div>
+}
+```
+
+## Props and TypeScript
+
+### Props Interfaces
+
+- Define props interfaces with descriptive names ending in `Props`
+- Use the interface pattern rather than inline types
+- Prefix with `I` for complex data interfaces (e.g., `IGmail`)
+
+```typescript
+interface MailCardProps {
+  id: string
+  subject: string
+  from: string
+  labels?: string[]
+}
+
+function MailCard({ id, subject, from, labels }: MailCardProps) {
+  // Component implementation
+}
+```
+
+## UI Components Pattern
+
+### Design System Components
+
+- Use CVA (Class Variance Authority) for variant-based styling
+- Follow the pattern established in [src/components/ui/button.tsx](mdc:src/components/ui/button.tsx)
+- Include proper TypeScript types for variants
+- Use `cn()` utility for conditional classes
+
+### Component Props
+
+- Use `React.ComponentProps<"element">` for extending native element props
+- Support `asChild` prop for composition when appropriate
+- Include proper `data-slot` attributes for identification
+
+## State Management
+
+### Client-side State
+
+- Use `useState` for local component state
+- Use `useEffect` for side effects and data fetching
+- Implement proper loading and error states
+
+### Error Handling
+
+- Create reusable error boundary components
+- Use toast notifications for user feedback (via `sonner`)
+- Handle async operations with proper try-catch blocks
+
+## Styling with Tailwind
+
+### Class Organization
+
+- Use `cn()` utility from [src/lib/utils.ts](mdc:src/lib/utils.ts) for conditional classes
+- Prefer Tailwind utilities over custom CSS
+- Use consistent spacing and sizing patterns
+- Follow the design system established in the UI components
+
+### Responsive Design
+
+- Use responsive prefixes: `sm:`, `md:`, `lg:`
+- Follow mobile-first approach
+- Use grid layouts for card-based interfaces
+
+## Component Composition
+
+### Layout Components
+
+- Create wrapper components for common layouts
+- Use proper semantic HTML elements
+- Include accessibility attributes where needed
+
+### Reusable Patterns
+
+- Extract common UI patterns into reusable components
+- Use render props or compound component patterns for flexibility
+- Maintain consistent API patterns across similar components

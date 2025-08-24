@@ -1,0 +1,152 @@
+---
+globs: **/api/**/*,**/lib/auth*,**/lib/session*
+---
+
+# Authentication and API Patterns
+
+## Better Auth Configuration
+
+### Auth Setup
+
+- Configuration in [src/lib/auth.ts](mdc:src/lib/auth.ts)
+- Uses Drizzle adapter with SQLite database
+- Google OAuth with Gmail API scopes
+- Client-side utilities in [src/lib/auth-client.ts](mdc:src/lib/auth-client.ts)
+
+### Required Scopes
+
+- Primary: `https://www.googleapis.com/auth/gmail.modify`
+- Fallback: `https://mail.google.com/`
+- Configured in auth provider settings
+
+## Session Management
+
+### Server-side Session Access
+
+```typescript
+import { getSession } from "@/lib/session"
+
+const session = await getSession()
+if (!session?.user?.id) {
+  return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+}
+```
+
+### Google Access Token
+
+```typescript
+import { getAccessToken } from "@/lib/session"
+
+const accessTokenResponse = await getAccessToken()
+if (!accessTokenResponse?.accessToken) {
+  // Handle missing token
+}
+```
+
+## Gmail API Integration
+
+### OAuth2 Client Setup
+
+```typescript
+import { google as googleapis } from "googleapis"
+
+const oauth2Client = new googleapis.auth.OAuth2()
+oauth2Client.setCredentials({
+  access_token: accessTokenResponse.accessToken,
+})
+
+const gmail = googleapis.gmail({
+  version: "v1",
+  auth: oauth2Client,
+})
+```
+
+### Scope Validation
+
+Always validate Gmail permissions before making API calls:
+
+```typescript
+const hasGmailScope =
+  accessTokenResponse.scopes?.includes(
+    "https://www.googleapis.com/auth/gmail.modify"
+  ) || accessTokenResponse.scopes?.includes("https://mail.google.com/")
+
+if (!hasGmailScope) {
+  return NextResponse.json(
+    {
+      error: "Insufficient Gmail permissions",
+      message: "Please re-authenticate with Google and grant Gmail access",
+      details: "You need to grant 'Modify your Gmail' permissions",
+      currentScopes: accessTokenResponse?.scopes || [],
+      requiredScopes: ["https://www.googleapis.com/auth/gmail.modify"],
+    },
+    { status: 403 }
+  )
+}
+```
+
+## API Error Handling
+
+### Standard Error Response Format
+
+```typescript
+return NextResponse.json(
+  {
+    error: "Error type",
+    message: "User-friendly message",
+    details?: "Additional technical details",
+    currentScopes?: string[], // For auth errors
+    requiredScopes?: string[], // For auth errors
+  },
+  { status: 401 | 403 | 500 }
+)
+```
+
+### Google API Error Handling
+
+- Check for `insufficient authentication scopes` in error messages
+- Provide clear re-authentication instructions
+- Return appropriate HTTP status codes
+
+### Common Error Scenarios
+
+1. **401 Unauthorized**: No session or invalid session
+2. **403 Forbidden**: Missing Gmail permissions or insufficient scopes
+3. **500 Internal**: Google API errors or server issues
+
+## Database Schema Integration
+
+### Better Auth Schema
+
+- Auto-generated schema in [src/db/schema.ts](mdc:src/db/schema.ts)
+- Includes user, session, account, and verification tables
+- Supports Google OAuth account linking
+- Stores access tokens and refresh tokens
+
+### Database Connection
+
+- SQLite with Drizzle ORM
+- Connection configured in [src/db/index.ts](mdc:src/db/index.ts)
+- Migration support via `npm run db:migrate`
+
+## Environment Variables
+
+### Required Variables
+
+- `GOOGLE_CLIENT_ID`: Google OAuth client ID
+- `GOOGLE_CLIENT_SECRET`: Google OAuth client secret
+- `BETTER_AUTH_SECRET`: Secret for Better Auth
+- `DATABASE_URL`: SQLite database path
+
+### Environment Validation
+
+- Use [src/lib/env.ts](mdc:src/lib/env.ts) for environment variable validation
+- Ensure proper type safety and validation with Zod
+
+## Security Considerations
+
+- Always validate session before API access
+- Check Gmail scopes before making Gmail API calls
+- Use secure HTTP-only cookies for session management
+- Implement proper CSRF protection via Better Auth
+- Store sensitive tokens securely in database

@@ -1,0 +1,118 @@
+---
+description: Development workflow, build processes, and deployment patterns
+---
+
+# Development and Deployment Patterns
+
+## Package Manager
+
+- **Primary**: Use Bun for package management and script execution
+- **Lock File**: `bun.lock` - commit to version control
+- **Installation**: Use `bun install` for dependencies
+- **Scripts**: Use `bunx` for executing packages
+
+## Development Scripts
+
+### Common Commands (from [package.json](mdc:package.json))
+
+```bash
+bun dev          # Start development server with Turbopack
+bun run build    # Build for production
+bun run start    # Start production server
+bun run check    # TypeScript check + Oxlint
+bun run format   # Format code with Prettier
+```
+
+### Database Management
+
+```bash
+bun run db:generate  # Generate Drizzle migrations
+bun run db:migrate   # Run database migrations
+bun run db:studio    # Open Drizzle Studio
+```
+
+### Authentication Schema
+
+```bash
+bun run auth:generate  # Generate Better Auth schema
+```
+
+## Development Workflow
+
+### Code Quality
+
+1. **TypeScript**: Strict mode enabled, use `bun run check` before commits
+2. **Linting**: Oxlint for fast linting
+3. **Formatting**: Prettier for consistent code style
+4. **Pre-commit**: Run checks locally before pushing
+
+### Database Workflow
+
+1. Modify schema in [src/db/schema.ts](mdc:src/db/schema.ts)
+2. Generate migration: `bun run db:generate`
+3. Apply migration: `bun run db:migrate`
+4. Use Drizzle Studio for data inspection
+
+## Build Configuration
+
+### Next.js Configuration
+
+- **Turbopack**: Enabled for development mode
+- **App Router**: Using Next.js 15 App Router
+- **TypeScript**: Strict mode with path mapping
+- **Tailwind**: v4 with PostCSS configuration
+
+### Environment Setup
+
+- Use [src/lib/env.ts](mdc:src/lib/env.ts) for environment variable validation
+- Required variables: Google OAuth credentials, Better Auth secret, database URL
+- Use `.env.local` for local development (not committed)
+
+## Deployment Considerations
+
+### Production Build
+
+- Run `bun run build` to create optimized production build
+- Ensure all environment variables are properly configured
+- Test with `bun run start` locally before deploying
+
+### Database Migrations
+
+- Run migrations in production using `bun run db:migrate`
+- Ensure database URL is configured for production environment
+- Consider backup strategies for production data
+
+### Security
+
+- Use proper HTTPS in production
+- Configure secure authentication secrets
+- Validate all environment variables using the env utility
+
+## Debugging and Monitoring
+
+### Development Debugging
+
+- Use browser dev tools for client-side debugging
+- Use console.error for server-side logging
+- Check Drizzle Studio for database state inspection
+
+### Error Handling
+
+- Implement proper error boundaries in React components
+- Use consistent error response format in API routes
+- Monitor Google API quota and rate limits
+
+## Performance Optimization
+
+### Next.js Optimizations
+
+- Use Server Components by default
+- Implement proper loading states
+- Use Next.js Image component for images
+- Enable static generation where possible
+
+### Database Optimization
+
+- Use proper indexing in database schema
+- Implement pagination for large datasets
+- Consider caching strategies for frequently accessed data
