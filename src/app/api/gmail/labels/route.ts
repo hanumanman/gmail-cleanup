@@ -1,16 +1,8 @@
 import { getAccessToken, getSession } from "@/lib/session"
 import { google } from "googleapis"
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 
-export async function GET(req: NextRequest) {
-  const searchParams = req.nextUrl.searchParams
-  const pageToken = searchParams.get("pageToken")
-  // TODO: Delete console.log
-  console.log("LOGGING pageToken", pageToken)
-  const labels = searchParams.get("labels")
-  // TODO: Delete console.log
-  console.log("LOGGING labels", labels)
-
+export async function GET() {
   try {
     const session = await getSession()
 
@@ -64,37 +56,22 @@ export async function GET(req: NextRequest) {
       auth: oauth2Client,
     })
 
-    // List the first 9 messages
-    const response = await gmail.users.messages.list({
+    // List all labels
+    const response = await gmail.users.labels.list({
       userId: "me",
-      maxResults: 9,
     })
 
-    const messages = response.data.messages || []
+    const labels = response.data.labels || []
 
-    if (messages.length === 0) {
+    if (labels.length === 0) {
       return NextResponse.json({
-        messages: [],
-        message: "No messages found",
+        labels: [],
+        message: "No labels found",
       })
     }
 
-    // Get full message details for each message
-    const messageDetails = await Promise.all(
-      messages.map(async message => {
-        const msgResponse = await gmail.users.messages.get({
-          userId: "me",
-          id: message.id!,
-          format: "metadata",
-          metadataHeaders: ["Subject", "From", "Date"],
-        })
-        return msgResponse.data
-      })
-    )
-
     return NextResponse.json({
-      messages: messageDetails,
-      nextPageToken: response.data.nextPageToken,
+      labels: labels,
     })
   } catch (error) {
     console.error("Error fetching Gmail messages:", error)

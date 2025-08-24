@@ -1,23 +1,55 @@
-import { env } from "@/lib/env"
-import { getSession } from "@/lib/session"
-import { headers } from "next/headers"
-import { redirect } from "next/navigation"
+"use client"
+import { authClient } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { MailCard } from "./_components/mail-card"
+import { useGetLabels, useGetMails } from "./queries"
+import { LoadingScreen } from "@/components/loading-screen"
 import { IGmail } from "./types"
+import { toast } from "sonner"
 
-async function CleanupPage() {
-  const session = await getSession()
+interface FilterState {
+  labels?: string
+  pageToken?: string
+}
+
+function CleanupPage() {
+  const session = authClient.getSession()
+  const router = useRouter()
+
+  const [filterState, _setFilterState] = useState<FilterState>()
+
+  const {
+    data: mailsRes,
+    status: mailsStatus,
+    error: mailsError,
+  } = useGetMails(filterState?.pageToken, filterState?.labels)
+
+  const {
+    data: labelsRes,
+    status: labelsStatus,
+    error: labelsError,
+  } = useGetLabels()
+  // TODO: Delete console.log
+  console.log("LOGGING labels", labelsRes)
 
   if (!session) {
-    redirect(`/api/auth/login?callbackUrl=${encodeURIComponent("/clean")}`)
+    router.push(`/api/auth/login?callbackUrl=${encodeURIComponent("/clean")}`)
   }
 
-  const res = await fetch(env.BASE_URL + "/api/gmail/messages", {
-    method: "GET",
-    headers: await headers(),
-  })
+  if (mailsStatus === "pending") {
+    return <LoadingScreen />
+  }
 
-  const mails: IGmail[] = await res.json().then(value => value.messages)
+  if (mailsStatus === "error") {
+    toast.error(mailsError?.message)
+  }
+
+  if (labelsStatus === "error") {
+    toast.error(labelsError?.message)
+  }
+
+  const mails = mailsRes?.messages as IGmail[]
 
   return (
     <div className="h-screen overflow-y-auto">
