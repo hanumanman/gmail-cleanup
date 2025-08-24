@@ -3,78 +3,51 @@
 import { Button } from "@/components/ui/button"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
-interface PaginationControlsProps {
-  hasNextPage: boolean
-  hasPreviousPage: boolean
-  onNextPageAction: () => void
-  onPreviousPageAction: () => void
-  onPageNumberAction: (pageNumber: number) => void
-  currentPage: number
-  totalPages: number
-  loading?: boolean
-}
+// interface PageState {
+//   currentPageToken: string | null
+//   nextPageToken: string | null
+//   prevPageToken: string | null
+// }
 
-export function PaginationControls({
-  hasNextPage,
-  hasPreviousPage,
-  onNextPageAction,
-  onPreviousPageAction,
-  onPageNumberAction,
-  currentPage,
-  totalPages,
-  loading = false,
-}: PaginationControlsProps) {
-  const generatePageNumbers = () => {
-    const pages = []
-    const maxVisiblePages = 5
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2))
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1)
+// interface PaginationControlsProps {
+//   nextPageToken: string | null
+//   loading?: boolean
+//   // onPageChange: (pageToken: string | null) => Promise<void>
+// }
+/*
+It turns out that gmail does not have a straightforward way to implement pagination. Most sensible way to do is just a simple next/prev page.
 
-    // Adjust start page if we're near the end
-    if (endPage - startPage + 1 < maxVisiblePages) {
-      startPage = Math.max(1, endPage - maxVisiblePages + 1)
-    }
+On page load: fetch gmail data, first 10 results + nextPageToken, then store token into pageState.
+Goto next page: get next 10 res using nextPageToken, then store token into pageState
+Go to prev page: get prev 10 res using prevPageToken, then store token into pageState
+This should be in context
+*/
 
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i)
-    }
-
-    return pages
+export function PaginationControls() {
+  const handleNextPage = () => {
+    alert("GG go next")
   }
 
-  const pageNumbers = generatePageNumbers()
+  const handlePreviousPage = () => {
+    alert("gg go prev")
+  }
 
   return (
     <div className="flex items-center justify-center gap-2 py-4">
       <Button
         variant="outline"
-        onClick={onPreviousPageAction}
-        disabled={!hasPreviousPage || loading}
+        onClick={handlePreviousPage}
+        // disabled={currentPage === 1 || loading}
         className="flex items-center gap-2"
       >
         <ChevronLeftIcon className="h-4 w-4" />
         Previous
       </Button>
 
-      <div className="flex items-center gap-1">
-        {pageNumbers.map(pageNumber => (
-          <Button
-            key={pageNumber}
-            variant={pageNumber === currentPage ? "default" : "outline"}
-            onClick={() => onPageNumberAction(pageNumber)}
-            disabled={loading || pageNumber === currentPage}
-            className="w-10 h-10 p-0 min-w-[40px] transition-all duration-200 hover:scale-105"
-            title={`Go to page ${pageNumber}`}
-          >
-            {pageNumber}
-          </Button>
-        ))}
-      </div>
-
       <Button
         variant="outline"
-        onClick={onNextPageAction}
-        disabled={!hasNextPage || loading}
+        onClick={handleNextPage}
+        // disabled={!nextPageToken || loading}
         className="flex items-center gap-2"
       >
         Next

@@ -1,16 +1,17 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { ChevronDownIcon } from "lucide-react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useEffect, useState } from "react"
 import type { IGmail } from "../types"
 
 interface Label {
@@ -19,63 +20,81 @@ interface Label {
 }
 
 interface FilterBarProps {
-  onEmailsChangeAction: (emails: IGmail[], labelId?: string) => void
+  onFilterChange: (emails: IGmail[]) => void
+  onError: (response: Response) => Promise<boolean>
 }
 
-export function FilterBar({ onEmailsChangeAction }: FilterBarProps) {
+export function FilterBar({ onFilterChange, onError }: FilterBarProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const [labels, setLabels] = useState<Label[]>([])
-  const [selectedLabel, setSelectedLabel] = useState<string>("")
   const [loading, setLoading] = useState(false)
 
-  // Fetch labels on component mount
   useEffect(() => {
     const fetchLabels = async () => {
       try {
         const response = await fetch("/api/gmail/labels")
-        if (response.ok) {
-          const data = await response.json()
-          setLabels(data.labels || [])
+        if (!response.ok) {
+          const isAuthError = await onError(response)
+          if (isAuthError) return
         }
+        const data = await response.json()
+        setLabels(data.labels || [])
       } catch (error) {
         console.error("Error fetching labels:", error)
       }
     }
 
     fetchLabels()
-  }, [])
+  }, [onError])
 
-  // Fetch emails when label is selected
-  const handleLabelChange = async (labelId: string) => {
-    setSelectedLabel(labelId)
-    setLoading(true)
+  // Get current label from URL
+  useEffect(() => {
+    const fetchEmails = async (labelId: string | null) => {
+      setLoading(true)
+      try {
+        const url = new URL("/api/gmail/messages", window.location.origin)
+        if (labelId && labelId !== "all") {
+          url.searchParams.set("labelId", labelId)
+        }
 
-    try {
-      if (labelId === "all") {
-        // Fetch all emails
-        const response = await fetch("/api/gmail/messages")
-        if (response.ok) {
-          const data = await response.json()
-          onEmailsChangeAction(data.messages || [], labelId)
+        const response = await fetch(url.toString())
+        if (!response.ok) {
+          const isAuthError = await onError(response)
+          if (isAuthError) return
         }
-      } else {
-        // Fetch emails for specific label
-        const response = await fetch(`/api/gmail/messages?labelId=${labelId}`)
-        if (response.ok) {
-          const data = await response.json()
-          onEmailsChangeAction(data.messages || [], labelId)
-        }
+        const data = await response.json()
+        onFilterChange(data.messages || [])
+      } catch (error) {
+        console.error("Error fetching emails:", error)
+        onFilterChange([])
+      } finally {
+        setLoading(false)
       }
-    } catch (error) {
-      console.error("Error fetching emails:", error)
-      onEmailsChangeAction([], labelId)
-    } finally {
-      setLoading(false)
     }
+
+    const labelId = searchParams.get("label") || "all"
+    fetchEmails(labelId)
+  }, [searchParams, onFilterChange, onError])
+
+  const handleLabelChange = (labelId: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (labelId === "all") {
+      params.delete("label")
+      params.delete("page") // Reset pagination when changing label
+    } else {
+      params.set("label", labelId)
+      params.delete("page") // Reset pagination when changing label
+    }
+    router.replace(`/clean${params.toString() ? `?${params}` : ""}`, {
+      scroll: false,
+    })
   }
 
   const getSelectedLabelName = () => {
-    if (selectedLabel === "all") return "All Labels"
-    return labels.find(l => l.id === selectedLabel)?.name || "Select a label"
+    const currentLabel = searchParams.get("label") || "all"
+    if (currentLabel === "all") return "All Labels"
+    return labels.find(l => l.id === currentLabel)?.name || "Select a label"
   }
 
   return (
@@ -107,14 +126,7 @@ export function FilterBar({ onEmailsChangeAction }: FilterBarProps) {
             </DropdownMenu>
           </div>
           {loading && <Badge>Loading...</Badge>}
-          {selectedLabel && !loading && (
-            <Badge>
-              {selectedLabel === "all"
-                ? "All Labels"
-                : labels.find(l => l.id === selectedLabel)?.name ||
-                  selectedLabel}
-            </Badge>
-          )}
+          {!loading && <Badge>{getSelectedLabelName()}</Badge>}
         </div>
       </CardContent>
     </Card>

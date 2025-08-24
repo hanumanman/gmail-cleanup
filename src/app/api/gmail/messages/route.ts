@@ -1,7 +1,6 @@
 import { getAccessToken, getSession } from "@/lib/session"
 import { google as googleapis } from "googleapis"
-import { NextResponse } from "next/server"
-import { NextRequest } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 
 export async function GET(request: NextRequest) {
   try {
