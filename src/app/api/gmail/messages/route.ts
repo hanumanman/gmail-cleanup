@@ -1,15 +1,19 @@
 import { getAccessToken, getSession } from "@/lib/session"
-import { google as googleapis } from "googleapis"
-import { NextRequest, NextResponse } from "next/server"
+import { logger } from "@/lib/utils"
+import { google } from "googleapis"
+import { NextResponse } from "next/server"
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getSession()
+
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    // Get the access token for Google using Better Auth's API
     const accessTokenResponse = await getAccessToken()
+
     if (!accessTokenResponse?.accessToken) {
       return NextResponse.json(
         {
@@ -21,10 +25,12 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Check if we have the required Gmail scope
     const hasGmailScope =
       accessTokenResponse.scopes?.includes(
         "https://www.googleapis.com/auth/gmail.modify"
       ) || accessTokenResponse.scopes?.includes("https://mail.google.com/")
+
     if (!hasGmailScope) {
       return NextResponse.json(
         {
@@ -39,44 +45,32 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const oauth2Client = new googleapis.auth.OAuth2()
+    // Debug logging. TODO: remove this later
+    logger("Access token response:", {
+      hasAccessToken: !!accessTokenResponse.accessToken,
+      scopes: accessTokenResponse.scopes,
+      accessTokenExpiresAt: new Date(
+        accessTokenResponse.accessTokenExpiresAt as unknown as string
+      ).toLocaleString(),
+    })
+
+    // Create OAuth2 client with the access token
+    const oauth2Client = new google.auth.OAuth2()
     oauth2Client.setCredentials({
       access_token: accessTokenResponse.accessToken,
     })
 
-    const gmail = googleapis.gmail({
+    // Create Gmail API client
+    const gmail = google.gmail({
       version: "v1",
       auth: oauth2Client,
     })
 
-    // Fetch all labels to map IDs to names
-    const labelsResponse = await gmail.users.labels.list({
+    // List the first 9 messages
+    const response = await gmail.users.messages.list({
       userId: "me",
+      maxResults: 9,
     })
-    const labels = labelsResponse.data.labels || []
-    const labelMap = new Map(labels.map(label => [label.id!, label.name!]))
-
-    // Get labelId and pageToken from query parameters
-    const { searchParams } = new URL(request.url)
-    const labelId = searchParams.get("labelId")
-    const pageToken = searchParams.get("pageToken")
-
-    const listParams: any = {
-      userId: "me",
-      maxResults: 10, // 10 items per page as requested
-    }
-
-    // If labelId is provided, filter by that label
-    if (labelId && labelId !== "all") {
-      listParams.labelIds = [labelId]
-    }
-
-    // If pageToken is provided, use it for pagination
-    if (pageToken) {
-      listParams.pageToken = pageToken
-    }
-
-    const response = await gmail.users.messages.list(listParams)
 
     const messages = response.data.messages || []
 
@@ -96,24 +90,17 @@ export async function GET(request: NextRequest) {
           format: "metadata",
           metadataHeaders: ["Subject", "From", "Date"],
         })
-        const msgData = msgResponse.data
-        // Map label IDs to names
-        const labelNames = (msgData.labelIds || []).map(
-          id => labelMap.get(id) || id
-        )
-        return {
-          ...msgData,
-          labels: labelNames,
-        }
+        return msgResponse.data
       })
     )
 
     return NextResponse.json({
       messages: messageDetails,
-      nextPageToken: response.data.nextPageToken || null,
     })
   } catch (error) {
     console.error("Error fetching Gmail messages:", error)
+
+    // Check for specific Gmail API errors
     if (error instanceof Error) {
       if (error.message.includes("insufficient authentication scopes")) {
         return NextResponse.json(

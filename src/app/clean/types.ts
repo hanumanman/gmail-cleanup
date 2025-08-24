@@ -2,7 +2,6 @@ export interface IGmail {
   id: string
   threadId: string
   labelIds: string[]
-  labels: string[]
   snippet: string
   payload: Payload
   sizeEstimate: number
