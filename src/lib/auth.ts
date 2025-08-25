@@ -13,7 +13,10 @@ export const auth = betterAuth({
     google: {
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
-      scope: ["https://www.googleapis.com/auth/gmail.modify"],
+      scope: [
+        "https://mail.google.com/",
+        "https://www.googleapis.com/auth/gmail.modify",
+      ],
     },
   },
 })

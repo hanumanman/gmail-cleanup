@@ -1,67 +1,25 @@
-import { getAccessToken, getSession } from "@/lib/session"
-import { google } from "googleapis"
+import { getGmailClient } from "@/lib/gmail-auth"
+import { GmailService } from "@/lib/gmail-service"
 import { NextResponse } from "next/server"
 
 export async function GET() {
   try {
-    const session = await getSession()
+    // Validate auth and get Gmail client
+    const clientResult = await getGmailClient([
+      "https://mail.google.com/",
+      "https://www.googleapis.com/auth/gmail.modify",
+      "https://www.googleapis.com/auth/gmail.readonly",
+    ])
 
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    if ("error" in clientResult) {
+      return NextResponse.json(clientResult.error, {
+        status: clientResult.error?.status || 500,
+      })
     }
 
-    // Get the access token for Google using Better Auth's API
-    const accessTokenResponse = await getAccessToken()
-
-    if (!accessTokenResponse?.accessToken) {
-      return NextResponse.json(
-        {
-          error: "No Google access token available",
-          message:
-            "Please re-authenticate with Google to grant Gmail API access",
-        },
-        { status: 401 }
-      )
-    }
-
-    // Check if we have the required Gmail scope
-    const hasGmailScope =
-      accessTokenResponse.scopes?.includes(
-        "https://www.googleapis.com/auth/gmail.modify"
-      ) || accessTokenResponse.scopes?.includes("https://mail.google.com/")
-
-    if (!hasGmailScope) {
-      return NextResponse.json(
-        {
-          error: "Insufficient Gmail permissions",
-          message:
-            "Please re-authenticate with Google and grant Gmail access when prompted",
-          details: "You need to grant 'Modify your Gmail' permissions",
-          currentScopes: accessTokenResponse?.scopes || [],
-          requiredScopes: ["https://www.googleapis.com/auth/gmail.modify"],
-        },
-        { status: 403 }
-      )
-    }
-
-    // Create OAuth2 client with the access token
-    const oauth2Client = new google.auth.OAuth2()
-    oauth2Client.setCredentials({
-      access_token: accessTokenResponse.accessToken,
-    })
-
-    // Create Gmail API client
-    const gmail = google.gmail({
-      version: "v1",
-      auth: oauth2Client,
-    })
-
-    // List all labels
-    const response = await gmail.users.labels.list({
-      userId: "me",
-    })
-
-    const labels = response.data.labels || []
+    // Use Gmail service to list labels
+    const gmailService = new GmailService(clientResult.gmail)
+    const labels = await gmailService.listLabels()
 
     if (labels.length === 0) {
       return NextResponse.json({
@@ -74,7 +32,7 @@ export async function GET() {
       labels: labels,
     })
   } catch (error) {
-    console.error("Error fetching Gmail messages:", error)
+    console.error("Error fetching Gmail labels:", error)
 
     // Check for specific Gmail API errors
     if (error instanceof Error) {
@@ -93,7 +51,7 @@ export async function GET() {
     }
 
     return NextResponse.json(
-      { error: "Failed to fetch messages" },
+      { error: "Failed to fetch labels" },
       { status: 500 }
     )
   }
