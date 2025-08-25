@@ -1,10 +1,10 @@
+import { ThemeProvider } from "@/components/theme-provider"
 import type { Metadata } from "next"
 import { Roboto, Roboto_Mono } from "next/font/google"
-import "./globals.css"
 import { Toaster } from "sonner"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Header } from "./(homepage)/_components/Header"
 import { Footer } from "./(homepage)/_components/Footer"
+import { Header } from "./(homepage)/_components/Header"
+import "./globals.css"
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -35,9 +35,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="min-h-screen flex flex-col justify-between bg-background">
+          <div className="bg-background flex min-h-screen flex-col justify-between">
             <Header />
-            <div className="grow flex flex-col">{children}</div>
+            <div className="flex grow flex-col">{children}</div>
             <Footer />
           </div>
         </ThemeProvider>

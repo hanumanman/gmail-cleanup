@@ -9,25 +9,25 @@ export default async function Home() {
   return (
     <main className="container mx-auto px-4 py-16">
       {/* Hero Section */}
-      <div className="max-w-3xl mx-auto text-center space-y-8">
+      <div className="mx-auto max-w-3xl space-y-8 text-center">
         <div className="space-y-4">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
             Clean Gmail Instantly
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground mx-auto max-w-2xl text-xl">
             Delete unwanted emails and reclaim storage space. Simple, fast, and
             effective email management.
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col justify-center gap-4 sm:flex-row">
           <Button asChild size="lg" className="text-base">
             <Link href="/clean">Go to Cleanup</Link>
           </Button>
           <Button
             variant="outline"
             size="lg"
-            className="text-base bg-transparent"
+            className="bg-transparent text-base"
           >
             View on GitHub
           </Button>
@@ -36,17 +36,17 @@ export default async function Home() {
 
       {/* Features Section */}
       <div className="mt-24 space-y-12">
-        <div className="text-center space-y-4">
+        <div className="space-y-4 text-center">
           <h2 className="text-3xl font-bold">Why Choose Clean Gmail?</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
             Built with privacy, simplicity, and your needs in mind
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Card>
-            <CardContent className="p-6 space-y-4">
-              <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
+            <CardContent className="space-y-4 p-6">
+              <div className="bg-muted flex h-12 w-12 items-center justify-center rounded-lg">
                 <LockSVG />
               </div>
               <div className="space-y-2">
@@ -60,8 +60,8 @@ export default async function Home() {
           </Card>
 
           <Card>
-            <CardContent className="p-6 space-y-4">
-              <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
+            <CardContent className="space-y-4 p-6">
+              <div className="bg-muted flex h-12 w-12 items-center justify-center rounded-lg">
                 <CheckSVG />
               </div>
               <div className="space-y-2">
@@ -75,8 +75,8 @@ export default async function Home() {
           </Card>
 
           <Card className="md:col-span-2 lg:col-span-1">
-            <CardContent className="p-6 space-y-4">
-              <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
+            <CardContent className="space-y-4 p-6">
+              <div className="bg-muted flex h-12 w-12 items-center justify-center rounded-lg">
                 <CodeSVG />
               </div>
               <div className="space-y-2">
@@ -93,8 +93,8 @@ export default async function Home() {
 
       {/* CTA Section */}
       <div className="mt-24">
-        <Card className="max-w-2xl mx-auto">
-          <CardContent className="p-8 text-center space-y-6">
+        <Card className="mx-auto max-w-2xl">
+          <CardContent className="space-y-6 p-8 text-center">
             <div className="space-y-2">
               <h2 className="text-2xl font-bold">
                 Ready to clean up your Gmail?

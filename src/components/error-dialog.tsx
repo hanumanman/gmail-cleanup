@@ -19,7 +19,7 @@ interface ErrorDialogProps {
     message?: string
     details?: string
     isAuthError?: boolean
-    type?: 'auth' | 'network' | 'generic'
+    type?: "auth" | "network" | "generic"
   }
   onRetry?: () => void
 }
@@ -47,9 +47,9 @@ export function ErrorDialog({
 
   const getIcon = () => {
     switch (error?.type) {
-      case 'auth':
+      case "auth":
         return <AlertTriangle className="h-5 w-5 text-amber-500" />
-      case 'network':
+      case "network":
         return <RefreshCw className="h-5 w-5 text-blue-500" />
       default:
         return <XCircle className="h-5 w-5 text-red-500" />
@@ -58,9 +58,9 @@ export function ErrorDialog({
 
   const getTitle = () => {
     switch (error?.type) {
-      case 'auth':
+      case "auth":
         return "Authentication Required"
-      case 'network':
+      case "network":
         return "Connection Error"
       default:
         return "Error Occurred"
@@ -69,9 +69,9 @@ export function ErrorDialog({
 
   const getDefaultMessage = () => {
     switch (error?.type) {
-      case 'auth':
+      case "auth":
         return "Your session has expired or you need to reauthenticate with Google to access Gmail."
-      case 'network':
+      case "network":
         return "Unable to connect to the server. Please check your internet connection and try again."
       default:
         return "An unexpected error occurred. Please try again or refresh the page."
@@ -90,12 +90,12 @@ export function ErrorDialog({
             {error?.message || getDefaultMessage()}
           </DialogDescription>
           {error?.details && (
-            <DialogDescription className="text-xs text-muted-foreground mt-2">
+            <DialogDescription className="text-muted-foreground mt-2 text-xs">
               {error.details}
             </DialogDescription>
           )}
         </DialogHeader>
-        <DialogFooter className="flex flex-col sm:flex-row gap-2">
+        <DialogFooter className="flex flex-col gap-2 sm:flex-row">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
@@ -106,12 +106,19 @@ export function ErrorDialog({
           ) : (
             <>
               {onRetry && (
-                <Button variant="outline" onClick={handleRetry} className="w-full sm:w-auto">
-                  <RefreshCw className="h-4 w-4 mr-2" />
+                <Button
+                  variant="outline"
+                  onClick={handleRetry}
+                  className="w-full sm:w-auto"
+                >
+                  <RefreshCw className="mr-2 h-4 w-4" />
                   Try Again
                 </Button>
               )}
-              <Button onClick={() => window.location.reload()} className="w-full sm:w-auto">
+              <Button
+                onClick={() => window.location.reload()}
+                className="w-full sm:w-auto"
+              >
                 Refresh Page
               </Button>
             </>

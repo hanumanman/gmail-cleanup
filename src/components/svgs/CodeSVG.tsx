@@ -1,7 +1,7 @@
 export const CodeSVG = () => {
   return (
     <svg
-      className="w-6 h-6 text-purple-600 dark:text-purple-400"
+      className="h-6 w-6 text-purple-600 dark:text-purple-400"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"

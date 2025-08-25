@@ -1,4 +1,5 @@
 "use client"
+
 import { authClient } from "@/lib/auth-client"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
@@ -19,7 +20,7 @@ export default function CleanMailPageLayout({
   const queryClient = new QueryClient()
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex flex-col grow">{children}</div>
+      <div className="flex grow flex-col">{children}</div>
     </QueryClientProvider>
   )
 }

@@ -28,7 +28,7 @@ export function BulkActions({
   onShowDeleteAllDialog,
 }: BulkActionsProps) {
   return (
-    <div className="flex items-center justify-between mb-4">
+    <div className="mb-4 flex items-center justify-between">
       <div className="flex items-center gap-2">
         <Button
           variant={bulkSelectMode ? "default" : "outline"}

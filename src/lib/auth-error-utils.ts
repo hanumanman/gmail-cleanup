@@ -1,7 +1,6 @@
 /**
  * Utility functions for handling all types of errors
  */
-
 import { AxiosError } from "axios"
 
 export interface ParsedError {

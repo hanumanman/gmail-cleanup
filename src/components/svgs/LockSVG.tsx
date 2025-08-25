@@ -1,7 +1,7 @@
 export const LockSVG = () => {
   return (
     <svg
-      className="w-6 h-6 text-blue-600 dark:text-blue-400"
+      className="h-6 w-6 text-blue-600 dark:text-blue-400"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"

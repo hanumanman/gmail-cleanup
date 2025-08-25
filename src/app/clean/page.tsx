@@ -1,4 +1,5 @@
 "use client"
+
 import { DeleteConfirmationDialog } from "@/components/delete-confirmation-dialog"
 import { ErrorDialog } from "@/components/error-dialog"
 import { LoadingScreen } from "@/components/loading-screen"

@@ -14,9 +14,9 @@ export function LoadingOverlay({
   if (!isVisible) return null
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 flex items-center gap-3 shadow-lg">
-        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-900"></div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="flex items-center gap-3 rounded-lg bg-white p-6 shadow-lg">
+        <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-gray-900"></div>
         <span className="text-sm font-medium">
           {isDeleteAll
             ? "Deleting all filtered emails..."

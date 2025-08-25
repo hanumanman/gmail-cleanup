@@ -48,9 +48,9 @@ export function MailCard({
       />
 
       <Card
-        className={`flex h-48 flex-col justify-between relative group ${
+        className={`group relative flex h-48 flex-col justify-between ${
           isDeleting || deleteMutation.isPending
-            ? "opacity-60 pointer-events-none"
+            ? "pointer-events-none opacity-60"
             : ""
         }`}
         suppressHydrationWarning
@@ -60,22 +60,22 @@ export function MailCard({
             <Checkbox
               checked={isSelected}
               onCheckedChange={handleCheckboxChange}
-              className="bg-white border-2"
+              className="border-2 bg-white"
               disabled={isDeleting || deleteMutation.isPending}
             />
           </div>
         )}
 
         {(isDeleting || deleteMutation.isPending) && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-20">
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/80">
             <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-700"></div>
+              <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-gray-700"></div>
               Deleting...
             </div>
           </div>
         )}
 
-        <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute top-2 right-2 z-10 opacity-0 transition-opacity group-hover:opacity-100">
           <Button
             variant="destructive"
             size="sm"

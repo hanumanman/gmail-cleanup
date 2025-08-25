@@ -78,14 +78,14 @@ export function LabelFilter({
             />
             <label
               htmlFor="inverse-filter"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
               Show emails WITHOUT the selected labels (inverse filter)
             </label>
           </div>
         )}
 
-        <div className="flex gap-2 items-center">
+        <div className="flex items-center gap-2">
           <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
             <DropdownMenuTrigger asChild>
               <Button
@@ -97,7 +97,7 @@ export function LabelFilter({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[300px]">
-              <DropdownMenuLabel className="flex justify-between items-center">
+              <DropdownMenuLabel className="flex items-center justify-between">
                 Filter by Labels
                 {pendingLabels.size > 0 && (
                   <Button
@@ -130,7 +130,7 @@ export function LabelFilter({
                 </>
               ) : labelsStatus === "error" ? (
                 // Show error message when labels fail to load
-                <div className="px-2 py-3 text-center text-sm text-muted-foreground">
+                <div className="text-muted-foreground px-2 py-3 text-center text-sm">
                   Unable to load labels. Please try refreshing the page.
                 </div>
               ) : (
@@ -156,7 +156,7 @@ export function LabelFilter({
               )}
 
               {/* Apply Filter Button */}
-              <div className="p-2 border-t">
+              <div className="border-t p-2">
                 <Button
                   onClick={applyFilters}
                   disabled={!hasChanges()}
@@ -178,9 +178,9 @@ export function LabelFilter({
                 return label ? (
                   <div
                     key={labelId}
-                    className="flex items-center gap-1 bg-primary/10 text-primary px-2 py-1 rounded-md text-xs"
+                    className="bg-primary/10 text-primary flex items-center gap-1 rounded-md px-2 py-1 text-xs"
                   >
-                    <span className="truncate max-w-[100px]">{label.name}</span>
+                    <span className="max-w-[100px] truncate">{label.name}</span>
                     <button
                       onClick={() => {
                         const newAppliedLabels = appliedLabels.filter(

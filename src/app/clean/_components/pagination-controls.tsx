@@ -31,10 +31,10 @@ export function PaginationControls({
       >
         ← Previous
       </Button>
-      <div className="text-sm text-gray-500 text-center">
+      <div className="text-center text-sm text-gray-500">
         <div>{emailRangeText}</div>
         {resultSizeEstimate && (
-          <div className="text-xs mt-1 opacity-75">
+          <div className="mt-1 text-xs opacity-75">
             * Gmail's estimated count (may not reflect total inbox)
           </div>
         )}

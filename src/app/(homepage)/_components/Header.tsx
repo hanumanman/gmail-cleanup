@@ -1,4 +1,5 @@
 "use client"
+
 import { ThemeToggler } from "@/components/mode-toggler"
 import { Button } from "@/components/ui/button"
 import { authClient, googleLogin, googleLogout } from "@/lib/auth-client"
@@ -18,24 +19,24 @@ export function Header() {
   }
 
   return (
-    <header className="relative z-10 px-4 py-6 sm:px-6 lg:px-8 border-b border-gray-200 dark:border-gray-700">
-      <div className="flex items-center justify-between max-w-7xl mx-auto">
+    <header className="relative z-10 border-b border-gray-200 px-4 py-6 sm:px-6 lg:px-8 dark:border-gray-700">
+      <div className="mx-auto flex max-w-7xl items-center justify-between">
         <div className="flex items-center space-x-3">
           <Link
             href={"/"}
-            className="text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap"
+            className="text-2xl font-bold whitespace-nowrap text-gray-900 dark:text-white"
           >
             GC
           </Link>
         </div>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden items-center gap-3 md:flex">
           <ThemeToggler />
           {session?.user ? (
             <div className="flex items-center gap-3">
               {session.user.image && (
-                <div className="w-8 aspect-square rounded-full relative overflow-hidden">
+                <div className="relative aspect-square w-8 overflow-hidden rounded-full">
                   <Image
                     src={session.user.image}
                     fill
@@ -61,7 +62,7 @@ export function Header() {
         </div>
 
         {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center">
+        <div className="flex items-center md:hidden">
           <Button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             variant="ghost"
@@ -78,14 +79,14 @@ export function Header() {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden mt-4">
+        <div className="mt-4 md:hidden">
           <div className="flex flex-col items-center gap-4">
             {session?.user ? (
               <>
-                <div className="whitespace-nowrap gap-2 flex items-center">
+                <div className="flex items-center gap-2 whitespace-nowrap">
                   <ThemeToggler />
                   {session.user.image && (
-                    <div className="w-8 aspect-square rounded-full relative overflow-hidden">
+                    <div className="relative aspect-square w-8 overflow-hidden rounded-full">
                       <Image
                         src={session.user.image}
                         fill
